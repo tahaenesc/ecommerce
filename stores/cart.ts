@@ -1,9 +1,7 @@
 import { Product } from "@/types/product";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
 export type CartProduct = Product & { count: number };
-
 type Store = {
   length: number;
   total: number;
@@ -37,29 +35,30 @@ export const useCart = create<Store>()(
           }
           return { products: nProducts, length: nProducts?.length, total: calculateTotal(nProducts) };
         }),
-      decProduct: (id) =>
-        set((state) => {
-          const nProducts = [] as CartProduct[];
-          state.products.forEach((p) => {
-            if (p._id === id) {
-              if (p.count > 1) {
-                nProducts.push({ ...p, count: p.count - 1 });
-              }
+      decProduct: (id) => set((state) => {
+        const nProducts = [] as CartProduct[]
+        state.products.forEach((p) => {
+            if(p._id === id) {
+                if(p.count > 1) {
+                    nProducts.push({ ...p, count: p.count - 1 })
+                }
             } else {
-              nProducts.push(p);
+                nProducts.push(p)
             }
-          });
-          return { products: nProducts, length: nProducts.length, total: calculateTotal(nProducts) };
-        }),
+        })
+        return { products: nProducts, length: nProducts.length, total: calculateTotal(nProducts) }
+
+      }),
     }),
     { name: "swrld-cart" }
   )
 );
 
+
 function calculateTotal(products: CartProduct[]) {
-  let tot = 0;
-  products.forEach((product) => {
-    tot = tot + product.count * product.price;
-  });
-  return tot;
+    let tot = 0
+    products.forEach(product => {
+        tot = tot + (product.count * product.price)
+    })
+    return tot
 }

@@ -4,7 +4,6 @@ import React from "react";
 
 export default async function Products() {
   const products = await getLatestProducts();
-  console.log(products);
   return (
     <div className="py-44 md:px-20 px-12">
       <div className="space-y-2">

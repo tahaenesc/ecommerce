@@ -1,4 +1,5 @@
 "use client";
+
 import { Slider } from "@/components/ui/slider";
 import { Product } from "@/types/product";
 import React, { useEffect, useMemo, useState } from "react";
@@ -7,7 +8,6 @@ type Props = {
   products: Product[];
   setProducts: (products: Product[]) => void;
 };
-
 export default function Filters({ products, setProducts }: Props) {
   const colors = useMemo(() => products.map((p) => p.color), [products]);
   const { max, min } = useMemo(() => {
@@ -18,6 +18,7 @@ export default function Filters({ products, setProducts }: Props) {
         max = pr.price;
         min = pr.price;
       }
+
       if (pr.price > max) {
         max = pr.price;
         min = max;
@@ -28,12 +29,11 @@ export default function Filters({ products, setProducts }: Props) {
     });
     return { max, min };
   }, [products]);
-  const [minPrice, setMinPrice] = useState(min);
-  const [selectedColors, setSelectedColors] = useState<string>([]);
 
   const toggleColor = (color: string) => {
     const exists = isColorSelected(color);
     if (exists) {
+      // removing the color of the array
       const nColors = selectedColors.filter((c) => c !== color);
       setSelectedColors(nColors);
     } else {
@@ -44,23 +44,27 @@ export default function Filters({ products, setProducts }: Props) {
   const isColorSelected = (color: string) =>
     selectedColors.some((c) => c === color);
 
+  const [minPrice, setMinPrice] = useState(min);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+
   useEffect(() => {
-    let filteredProducts = products;
-    filteredProducts =
-      selectedColors.length === 0
+    let filteredProducts = products
+    //colors 
+    filteredProducts = 
+        selectedColors.length === 0 
         ? products
-        : filteredProducts.filter((p) => selectedColors.includes(p.color));
-
-    filteredProducts = filteredProducts.filter((p) => p.price >= minPrice);
-    setProducts(filteredProducts);
-  }, [minPrice, selectedColors]);
-
+        : filteredProducts.filter(p => selectedColors.includes(p.color))
+    
+    // price 
+    filteredProducts = filteredProducts.filter(p => p.price >= minPrice)
+    setProducts(filteredProducts)
+  }, [minPrice, products, selectedColors, setProducts])
   return (
-    <div className="flex flex-col gap-6 px-6 py-10 ">
+    <div className="flex flex-col gap-6 px-6 py-10">
       <div className="space-y-2">
         <span className="font-semibold text-zinc-500 text-sm">Price Range</span>
         <div className="flex items-center gap-1">
-          <span> {min} $</span>
+          <span>{min}$</span>
           <Slider
             defaultValue={[max]}
             min={min}
@@ -69,7 +73,7 @@ export default function Filters({ products, setProducts }: Props) {
             step={1}
             onValueChange={(v) => setMinPrice(v[0])}
           />
-          <span>100$</span>
+          <span>{max}$</span>
         </div>
       </div>
 
@@ -80,12 +84,12 @@ export default function Filters({ products, setProducts }: Props) {
             <div
               key={color}
               onClick={() => toggleColor(color)}
-              className={`transition-all w-[50px] ${isColorSelected(color) ? "border border-zinc-600 p-1" : ""} border-zinc-600 p-1 `}
+              className={`transition-all w-[50px] ${isColorSelected(color) ? "border border-zinc-600 p-1" : ""}  `}
             >
               <div
-                className="w-full h-full aspect-square  "
+                className="w-full h-full aspect-square"
                 style={{ background: color }}
-              ></div>
+              />
             </div>
           ))}
         </div>

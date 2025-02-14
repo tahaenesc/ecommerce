@@ -7,7 +7,7 @@ const sk = process.env.NEXT_PUBLIC_JWT_SECRET_KEY || "";
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/admin")) {
-    const token = cookies().get("admin_token")?.value || "";
+    const token = (await cookies()).get("admin_token")?.value || "";
     if (!token) return NextResponse.redirect(new URL("/login", request.url));
     const encodedSecret = new TextEncoder().encode(sk);
     const { payload: credentials } = await jose.jwtVerify(token, encodedSecret);

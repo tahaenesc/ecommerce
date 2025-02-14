@@ -1,5 +1,5 @@
 import Hero from "./sections/hero";
-import Products from "./sections/product";
+import Products from "./sections/products";
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
